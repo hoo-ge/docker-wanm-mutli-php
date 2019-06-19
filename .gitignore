@@ -1,0 +1,5 @@
+#日志文件
+/logs/nginx/*.log
+
+#数据库
+/data/mariadb
