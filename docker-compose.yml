@@ -1,58 +1,55 @@
-nginx:
-  image: nginx:latest
-  restart: always
-  ports:
-    - "80:80"
-  privileged: false
-  volumes:
-    - ./host/:/usr/share/nginx/html/:rw
-    - ./logs/nginx/:/var/log/nginx/:rw
-    - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    - ./conf/nginx/conf.d/:/etc/nginx/conf.d/:ro
-  links:
-    - php56:fcgi56
-    - php72:fcgi72
-    - php73:fcgi73
+version: "3.7"
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./host/:/usr/share/nginx/html/:rw
+      - ./logs/nginx/:/var/log/nginx/:rw
+      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./conf/nginx/conf.d/:/etc/nginx/conf.d/:ro
+    links:
+      # - php56:fcgi56
+      - php72:fcgi72
+      - php73:fcgi73
 
-php56:
-  image: php:5.6-fpm
-  privileged: false
-  volumes:
-    - ./host/:/usr/share/nginx/html/:rw
-    - ./conf/php/php.ini-56:/usr/local/etc/php/php.ini:ro
-  links:
-    - mariadb:db
+  # php56:
+  #   image: php:5.6-fpm
+  #   volumes:
+  #     - ./host/:/usr/share/nginx/html/:rw
+  #     - ./conf/php/php.ini-56:/usr/local/etc/php/php.ini:ro
+  #   links:
+  #     - mariadb:db
 
-php72:
-  image: php:7.2-fpm
-  privileged: false
-  volumes:
-    - ./host/:/usr/share/nginx/html/:rw
-    - ./conf/php/php.ini-72:/usr/local/etc/php/php.ini:ro
-  links:
-    - mariadb:db
+  php72:
+    build: ./build/php-72/
+    volumes:
+      - ./host/:/usr/share/nginx/html/:rw
+      - ./conf/php/php.ini-72:/usr/local/etc/php/php.ini:ro
+    # links:
+    #   - mariadb:db
 
-php73:
-  image: php:7.3-fpm
-  privileged: false
-  volumes:
-    - ./host/:/usr/share/nginx/html/:rw
-    - ./conf/php/php.ini-73:/usr/local/etc/php/php.ini:ro
-  links:
-    - mariadb:db
+  php73:
+    build: ./build/php-73/
+    volumes:
+      - ./host/:/usr/share/nginx/html/:rw
+      - ./conf/php/php.ini-73:/usr/local/etc/php/php.ini:ro
+    # links:
+    #   - mariadb:db
 
-mariadb:
-  image: mariadb:latest
-  volumes:
-    - ./data/mariadb/:/var/lib/mysql/:rw
-    - ./logs/mariadb/:/var/log/mysql/:rw
-    - ./conf/mariadb/my.cnf:/etc/mysql/my.cnf:ro
-  environment:
-    MYSQL_ROOT_PASSWORD: hooge
+  # mariadb:
+  #   image: mariadb:latest
+  #   volumes:
+  #     - ./data/mariadb/:/var/lib/mysql/:rw
+  #     - ./logs/mariadb/:/var/log/mysql/:rw
+  #     - ./conf/mariadb/my.cnf:/etc/mysql/my.cnf:ro
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: hooge
 
-adminer:
-  image: adminer:latest
-  ports:
-    - "8080:8080"
-  links:
-    - mariadb:db
+  # adminer:
+  #   image: adminer:latest
+  #   ports:
+  #     - "8080:8080"
+  #   links:
+  #     - mariadb:db
