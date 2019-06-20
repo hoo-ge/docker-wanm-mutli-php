@@ -3,6 +3,7 @@
 
 #数据库
 /data/mariadb
+/data/postgres
 
 #网站配置文件
 www.linkag.net.conf
