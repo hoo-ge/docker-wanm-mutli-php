@@ -11,50 +11,50 @@ services:
       - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./conf/nginx/conf.d/:/etc/nginx/conf.d/:ro
     links:
-      # - php56:fcgi56
+      - php56:fcgi56
       - php72:fcgi72
       - php73:fcgi73
 
-  # php56:
-  #   image: php:5.6-fpm
-  #   volumes:
-  #     - ./host/:/usr/share/nginx/html/:rw
-  #     - ./conf/php/php.ini-56:/usr/local/etc/php/php.ini:ro
-  #   links:
-  #     - mariadb:db
+  php56:
+    image: php:5.6-fpm
+    volumes:
+      - ./host/:/usr/share/nginx/html/:rw
+      - ./conf/php/php.ini-56:/usr/local/etc/php/php.ini:ro
+    links:
+      - mariadb:mdb
 
   php72:
     build: ./build/php-72/
     volumes:
       - ./host/:/usr/share/nginx/html/:rw
       - ./conf/php/php.ini-72:/usr/local/etc/php/php.ini:ro
-    # links:
-    #   - mariadb:db
+    links:
+      - mariadb:mdb
 
   php73:
     build: ./build/php-73/
     volumes:
       - ./host/:/usr/share/nginx/html/:rw
       - ./conf/php/php.ini-73:/usr/local/etc/php/php.ini:ro
-    # links:
-    #   - mariadb:db
-
-  # mariadb:
-  #   image: mariadb:latest
-  #   volumes:
-  #     - ./data/mariadb/:/var/lib/mysql/:rw
-  #     - ./logs/mariadb/:/var/log/mysql/:rw
-  #     - ./conf/mariadb/my.cnf:/etc/mysql/my.cnf:ro
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: hooge
+    links:
+      - mariadb:mdb
 
   adminer:
     image: adminer:latest
     ports:
       - "8080:8080"
     links:
-      # - mariadb:db
+      - mariadb:mdb
       - postgres:pdb
+
+  mariadb:
+    image: mariadb:latest
+    volumes:
+      - mariadb:/var/lib/mysql/
+      - ./logs/mariadb/:/var/log/mysql/:rw
+      - ./conf/mariadb/my.cnf:/etc/mysql/my.cnf:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: hooge
 
   postgres:
     image: postgres:alpine
@@ -65,3 +65,4 @@ services:
 
 volumes:
   postgres:
+  mariadb:
